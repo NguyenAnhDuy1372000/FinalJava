@@ -3,10 +3,9 @@ package com.yeet.enote.Entities;
 import java.util.List;
 import java.util.Optional;
 
-import javax.transaction.Transactional;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 
 
@@ -21,13 +20,12 @@ public class PostService {
 		return (List<Post>) postRepository.findAll();
 	}
 
-	
 	public Post get(int id) {
 		Optional<Post> result = postRepository.findById(id);
 		return result.get();
 	}
 	public void save(Post post) {
-		postRepository.save(post);
+		postRepository.saveAndFlush(post);
 	}
 	
 	public void delete(int id) {
@@ -36,7 +34,7 @@ public class PostService {
 
 
 	public void flush() {
-		postRepository.flush();		
+		postRepository.flush();
 	}
 	
 }

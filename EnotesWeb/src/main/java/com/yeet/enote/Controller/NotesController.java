@@ -1,13 +1,16 @@
 package com.yeet.enote.Controller;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +23,7 @@ import com.yeet.enote.Entities.UserService;
 
 @Controller
 @RequestMapping("/")
+@Transactional
 public class NotesController {
 	
 	@Autowired
@@ -27,9 +31,6 @@ public class NotesController {
 	
 	@Autowired 
 	UserService uservice;
-	
-	@Autowired
-	EntityManager em;
 	
 	//RETURN_CREATE_VIEW
 	@RequestMapping(value = {"/newNote"},method = RequestMethod.GET)
@@ -48,8 +49,7 @@ public class NotesController {
 		if(currentUser == null) {
 			return "redirect:/";
 		}
-		List<Post> userPost = null;
-		userPost = uservice.getAllPostByUser(currentUser);
+		List<Post> userPost = uservice.getAllPostByUser(currentUser);
 		//em.refresh
 		model.addAttribute("posts", userPost);
 		
@@ -63,18 +63,55 @@ public class NotesController {
 		if(currentUser == null) {
 			return "redirect:/";
 		}
+		Post post = pservice.get(id);
+		model.addAttribute("post",post);
 		return "user/edit";
 	}
 	
+	//EDIT
+		@RequestMapping(value = {"/edit/{id}"},method = RequestMethod.POST)
+		public String editnote(@PathVariable("id") int id,HttpServletRequest request , HttpSession session, Model model) {
+			User currentUser = (User)session.getAttribute("user");
+			if(currentUser == null) {
+				return "redirect:/";
+			}
+			Post postdb = pservice.get(id);
+			String title = request.getParameter("title");
+			String content = request.getParameter("content");
+			Date date = new Date();
+			
+			postdb.setTitle(title);
+			postdb.setContent(content);
+			postdb.setPdate(date);
+			pservice.save(postdb);
+			Post postuser = currentUser.getPosts().stream().filter(x -> x.getId() == id).findFirst().get();
+			postuser.setTitle(title);
+			postuser.setContent(content);
+			postuser.setPdate(date);
+
+			pservice.flush();
+			uservice.flush();
+			
+			return "redirect:/";
+		}
+	
 	//DELETE
-	@RequestMapping(value = {"/deletenote/{id}"},method = RequestMethod.POST)
+	@RequestMapping(value = {"/deletenote/{id}"},method = RequestMethod.GET)
 	public String deleteNote(@PathVariable("id") int id, HttpSession session, Model model) {
 		User currentUser = (User)session.getAttribute("user");
 		if(currentUser == null) {
 			return "redirect:/";
 		}
+		
+		
 		pservice.delete(id);
-		return "redirect:/";
+		Post postuser = currentUser.getPosts().stream().filter(x -> x.getId() == id).findFirst().get();
+		currentUser.getPosts().remove(postuser);
+		
+		pservice.flush();
+		uservice.flush();
+		
+		return "redirect:/notes";
 	}
 	
 	//CREATE
@@ -82,14 +119,19 @@ public class NotesController {
 	public String logincheck(HttpServletRequest request, Model model, HttpSession session) { 
 		String title = request.getParameter("title");
 		String content = request.getParameter("content");	
+		User currentUser = (User)session.getAttribute("user");
 		
 		Post post = new Post();
 		post.setContent(content);
 		post.setTitle(title);
-
+		post.setPdate(new Date());
+		post.setUser(currentUser);
+		currentUser.getPosts().add(post);
 		pservice.save(post);
+		pservice.flush();
+		uservice.flush();
 		
-		return "redirect:/shownote";
+		return "redirect:/notes";
 	}
 	
 	
