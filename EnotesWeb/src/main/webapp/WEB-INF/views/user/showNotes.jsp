@@ -8,50 +8,41 @@
 <head>
 <meta charset="UTF-8">
 <title>Show Notes</title>
-
+<c:url value="/resources" var="resourcespath" />
 </head>
 <body>
 
 	<div class="container">
+		<br />
 		<h2>All Notes:</h2>
 		<c:forEach items="${ posts }" var="post">
-			${ post.id } <br />
-		</c:forEach>
-		<div class="row">
-			<div class="col-md-12">
-				
+			<div class="row">
+				<div class="col-md-12">
 					<div class="card mt-3">
-					<img alt="" src="img/star.png" class="card-img-top mt-2 mx-auto"
-						style="max-width: 100px;">
-
-					<div class="card-body p-4">
-
-
-						<h5 class="card-title"></h5>
-						<p>
-						</p>
-
-
-						<p>
-							<b class="text-success"></b></br> <b
-								class="text-primary"></b> <b class="text-success"> 
-								Date: </b></br> <b class="text-success"></b>
-						</p>
-
-						<div class="container text-center mt-2">
-							<a href="deleteServlet?note_id=" class="btn btn-danger">Delete</a> 
-							
-							<a href="edit.jsp?note_id=" class="btn btn-primary">Edit</a>
+						<div class="card-body p-4">
+							<img alt="" src="${resourcespath}/note-icon.png"
+								class="card-img-top mt-2 mx-auto" style="max-width: 100px;">
+							<h5 class="card-title">
+								<b class="text-success">Title: </b> ${ post.title }
+							</h5>
+							<p><h6>${ post.content }</h6>
+							<p>
+								<b class="text-success">Published by: </b>${ sessionScope.user.name }</br>
+								<b class="text-primary"></b> <b class="text-success"> Date:
+								</b>${ post.pdate }</br> <b class="text-success"></b>
+							</p>
+							<div class="container text-right mt-2">
+								<a href='<c:url value="/editnote/${post.id}"></c:url>'
+									class="btn btn-primary">Edit</a> 
+								<a href='<c:url value="/deletenote/${post.id}"></c:url>'
+									class="btn btn-danger" type="submit">Delete</a>
+							</div>
 						</div>
 					</div>
-
 				</div>
-				
-
-
-
 			</div>
-		</div>
+			<br />
+		</c:forEach>
 	</div>
 </body>
 </html>

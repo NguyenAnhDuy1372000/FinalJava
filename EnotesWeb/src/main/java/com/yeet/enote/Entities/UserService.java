@@ -6,6 +6,7 @@ import java.util.Optional;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -47,7 +48,7 @@ public class UserService {
 		return userRepository.getUserByEmail(email);
 	}
 
-
+	@Modifying(clearAutomatically = true)
 	public List<Post> getAllPostByUser(User currentUser) {
 		return currentUser.getPosts();
 	}
