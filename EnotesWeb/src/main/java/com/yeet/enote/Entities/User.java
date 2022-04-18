@@ -1,7 +1,9 @@
 package com.yeet.enote.Entities;
 
 import java.util.Collection;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -21,9 +23,17 @@ public class User {
 	private String email;
 	private String password;
 	
-	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER)
-	private Collection<Post> posts;
+	@OneToMany(mappedBy = "user", fetch = FetchType.EAGER, cascade=CascadeType.REFRESH)
+	private List<Post> posts;
 	
+	
+	
+	public List<Post> getPosts() {
+		return posts;
+	}
+	public void setPosts(List<Post> posts) {
+		this.posts = posts;
+	}
 	public int getId() {
 		return id;
 	}

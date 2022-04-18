@@ -43,4 +43,16 @@ public class UserService {
 		}
 	}
 	
+	public User getUserByEmail(String email) {
+		return userRepository.getUserByEmail(email);
+	}
+
+
+	public List<Post> getAllPostByUser(User currentUser) {
+		return currentUser.getPosts();
+	}
+	
+	public void flush() {
+		userRepository.flush();
+	}
 }

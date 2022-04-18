@@ -32,9 +32,13 @@ public class HomeController {
 	@RequestMapping(value = {"/login"},method = RequestMethod.POST)
 	public String logincheck(HttpServletRequest request, Model model, HttpSession session) { 
 		String email = request.getParameter("uemail");
-		String password = request.getParameter("upassword");
+		String password = request.getParameter("upassword");	
+		
+		
 		
 		if(uservice.login(email, password)) {
+			User currentUser = uservice.getUserByEmail(email);
+			session.setAttribute("user", currentUser);
 			return "redirect:/";
 		}else {
 			return "user/loginfail";
@@ -57,9 +61,17 @@ public class HomeController {
 		return "user/login";
 	}
 	
+	@RequestMapping(value = {"/logout"},method = RequestMethod.GET)
+	public String logout(HttpSession session) {
+		session.setAttribute("user", null);
+		return "redirect:/";
+	}
+	
 	
 	@RequestMapping(value = {"/register"},method = RequestMethod.GET)
 	public String register() {
 		return "user/registerdk";
 	}
+	
+	
 }

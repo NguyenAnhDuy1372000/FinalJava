@@ -33,5 +33,10 @@ public class PostService {
 	public void delete(int id) {
 		postRepository.deleteById(id);
 	}
+
+
+	public void flush() {
+		postRepository.flush();		
+	}
 	
 }

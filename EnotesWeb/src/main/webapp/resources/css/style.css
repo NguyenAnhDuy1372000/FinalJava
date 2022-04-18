@@ -16,3 +16,22 @@
 .div-color{
 	background-image: linear-gradient(to right top, #ed6700, #ec9000, #e5b500, #d9d828, #c8f95a);
 }
+
+.back-img {
+	background: url("img/notes1.jpg");
+	width: 100%;
+	background-repeat: no-repeat;
+	background-size: cover;
+	
+}
+
+.body-img {
+	width: 250px;
+	height: 250px;
+	object-fit: contain;
+}
+
+.body-img-wrapper{
+	display: flex;
+	justify-content: center;
+}
