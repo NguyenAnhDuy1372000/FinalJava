@@ -1,5 +1,6 @@
 package com.yeet.enote.Controller;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Date;
 import java.util.List;
 
@@ -80,6 +81,11 @@ public class NotesController {
 			String content = request.getParameter("content");
 			Date date = new Date();
 			
+			byte[] bytes = title.getBytes(StandardCharsets.ISO_8859_1);
+			title = new String(bytes, StandardCharsets.UTF_8);
+			byte[] bytes2 = content.getBytes(StandardCharsets.ISO_8859_1);
+			content = new String(bytes2, StandardCharsets.UTF_8);
+			
 			postdb.setTitle(title);
 			postdb.setContent(content);
 			postdb.setPdate(date);
@@ -92,7 +98,7 @@ public class NotesController {
 			pservice.flush();
 			uservice.flush();
 			
-			return "redirect:/";
+			return "redirect:/notes";
 		}
 	
 	//DELETE
@@ -119,6 +125,11 @@ public class NotesController {
 	public String logincheck(HttpServletRequest request, Model model, HttpSession session) { 
 		String title = request.getParameter("title");
 		String content = request.getParameter("content");	
+		byte[] bytes = title.getBytes(StandardCharsets.ISO_8859_1);
+		title = new String(bytes, StandardCharsets.UTF_8);
+		byte[] bytes2 = content.getBytes(StandardCharsets.ISO_8859_1);
+		content = new String(bytes2, StandardCharsets.UTF_8);
+
 		User currentUser = (User)session.getAttribute("user");
 		
 		Post post = new Post();
